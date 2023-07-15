@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { Schema, model } from "mongoose";
 import config from "../../../config";
-import { IUser, UserModel } from "./auth.interface";
+import { IUser, ReadingStatus, UserModel } from "./auth.interface";
 
 const userSchema = new Schema<IUser, UserModel>(
   {
@@ -25,6 +25,28 @@ const userSchema = new Schema<IUser, UserModel>(
         required: true,
       },
     },
+    wishList: [
+      {
+        book: {
+          type: Schema.Types.ObjectId,
+          ref: "Book",
+        },
+      },
+    ],
+    bookList: [
+      {
+        book: {
+          type: Schema.Types.ObjectId,
+          ref: "Book",
+          require: true,
+        },
+        status: {
+          type: String,
+          enum: ReadingStatus,
+          required: true,
+        },
+      },
+    ],
   },
   {
     timestamps: true,

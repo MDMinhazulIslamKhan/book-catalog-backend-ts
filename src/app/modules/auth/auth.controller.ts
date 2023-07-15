@@ -3,7 +3,6 @@ import httpStatus from "http-status";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 import { AuthService } from "./auth.service";
-import config from "../../../config";
 import { ILoginUserResponse } from "./auth.interface";
 
 const loginUser = catchAsync(async (req: Request, res: Response) => {

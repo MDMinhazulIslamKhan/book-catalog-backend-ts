@@ -1,4 +1,4 @@
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 
 export type ILoginUser = {
   email: string;
@@ -14,10 +14,20 @@ export type UserName = {
   lastName: string;
 };
 
+export type Status = "Currently reading" | "Read soon" | "Finished reading";
+
+export const ReadingStatus: Status[] = [
+  "Currently reading",
+  "Read soon",
+  "Finished reading",
+];
+
 export type IUser = {
   email: string;
   password: string;
   name: UserName;
+  wishList?: Array<{ book: Types.ObjectId }>;
+  bookList?: Array<{ book: Types.ObjectId; status: Status }>;
 };
 
 export type UserModel = {
