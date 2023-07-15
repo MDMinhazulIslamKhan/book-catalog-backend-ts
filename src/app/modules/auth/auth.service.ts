@@ -1,10 +1,11 @@
 import httpStatus from "http-status";
 import { Secret } from "jsonwebtoken";
 import ApiError from "../../../errors/ApiError";
-import { ILoginUser, ILoginUserResponse, IUser } from "./auth.interface";
+import { ILoginUser, ILoginUserResponse } from "./auth.interface";
 import config from "../../../config";
 import { jwtHelpers } from "../../../helpers/jwtHelpers";
-import User from "./auth.model";
+import { IUser } from "../user/user.interface";
+import User from "../user/user.model";
 
 const loginUser = async (payload: ILoginUser): Promise<ILoginUserResponse> => {
   const { email, password } = payload;

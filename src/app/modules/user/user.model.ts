@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { Schema, model } from "mongoose";
 import config from "../../../config";
-import { IUser, ReadingStatus, UserModel } from "./auth.interface";
+import { IUser, ReadingStatus, UserModel } from "./user.interface";
 
 const userSchema = new Schema<IUser, UserModel>(
   {

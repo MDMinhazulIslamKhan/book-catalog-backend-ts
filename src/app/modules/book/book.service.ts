@@ -1,5 +1,4 @@
 import httpStatus from "http-status";
-import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import ApiError from "../../../errors/ApiError";
 import {
   IGenericResponse,
@@ -10,8 +9,9 @@ import mongoose, { SortOrder } from "mongoose";
 import config from "../../../config";
 import { IBook, IBookFilters } from "./book.interface";
 import Book from "./book.model";
-import User from "../auth/auth.model";
 import { bookFilterableField } from "./book.constant";
+import User from "../user/user.model";
+import { JwtPayload } from "jsonwebtoken";
 
 const createBook = async (
   book: IBook,
@@ -89,6 +89,9 @@ const getAllBooks = async (
 
 const getSingleBook = async (id: string): Promise<IBook | null> => {
   const result = await Book.findById(id).populate("publisher");
+  if (!result) {
+    throw new ApiError(httpStatus.NOT_FOUND, "Book not found !");
+  }
   return result;
 };
 
