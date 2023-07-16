@@ -1,6 +1,5 @@
 import { Schema, model } from "mongoose";
 import { BookModel, IBook, bookGenre } from "./book.interface";
-import { array } from "zod";
 
 const bookSchema = new Schema<IBook, BookModel>(
   {
