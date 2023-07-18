@@ -5,11 +5,10 @@ import {
   IPaginationOptions,
 } from "../../../interfaces/common";
 import { calculatePagination } from "../../../helpers/paginationHelper";
-import mongoose, { SortOrder } from "mongoose";
-import config from "../../../config";
+import { SortOrder } from "mongoose";
 import { IBook, IBookFilters } from "./book.interface";
 import Book from "./book.model";
-import { bookFilterableField } from "./book.constant";
+import { bookSearchableFields } from "./book.constant";
 import User from "../user/user.model";
 import { JwtPayload } from "jsonwebtoken";
 
@@ -42,7 +41,7 @@ const getAllBooks = async (
   // for filter data
   if (searchTerm) {
     andConditions.push({
-      $or: bookFilterableField.map((field) => ({
+      $or: bookSearchableFields.map((field) => ({
         [field]: { $regex: searchTerm, $options: "i" },
       })),
     });
@@ -175,6 +174,68 @@ const deleteBook = async (
   return result;
 };
 
+const getOwnBooks = async (
+  filters: IBookFilters,
+  paginationOptions: IPaginationOptions,
+  userInfo: JwtPayload | null
+): Promise<IGenericResponse<IBook[]>> => {
+  const user = await User.findOne({ email: userInfo?.email });
+
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found !");
+  }
+  const { searchTerm, ...filtersData } = filters;
+
+  const andConditions: any[] = [{ publisher: { $eq: user.id } }];
+
+  // for filter data
+  if (searchTerm) {
+    andConditions.push({
+      $or: bookSearchableFields.map((field) => ({
+        [field]: { $regex: searchTerm, $options: "i" },
+      })),
+    });
+  }
+
+  // for exact match user and condition
+  if (Object.keys(filtersData).length) {
+    andConditions.push({
+      $and: Object.entries(filtersData).map(([field, value]) => ({
+        [field]: value,
+      })),
+    });
+  }
+
+  const { page, limit, skip, sortBy, sortOrder } =
+    calculatePagination(paginationOptions);
+
+  const sortConditions: { [key: string]: SortOrder } = {};
+
+  if (sortBy && sortOrder) {
+    sortConditions[sortBy] = sortOrder;
+  }
+
+  // if no condition is given
+  const query = { $and: andConditions };
+
+  const result = await Book.find(query)
+    .sort(sortConditions)
+    .skip(skip)
+    .limit(limit)
+    .populate("publisher");
+
+  const count = await Book.countDocuments(query);
+
+  return {
+    meta: {
+      page,
+      limit,
+      count,
+    },
+    data: result,
+  };
+};
+
 export const BookService = {
   createBook,
   updateBook,
@@ -182,4 +243,5 @@ export const BookService = {
   deleteBook,
   getAllBooks,
   getSingleBook,
+  getOwnBooks,
 };

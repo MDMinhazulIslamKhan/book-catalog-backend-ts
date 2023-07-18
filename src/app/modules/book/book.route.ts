@@ -24,6 +24,8 @@ router.get("/get-single-book/:id", BookController.getSingleBook);
 
 router.get("/get-all-books", BookController.getAllBooks);
 
+router.get("/get-own-books", auth(), BookController.getOwnBooks);
+
 router.delete("/delete-book/:id", auth(), BookController.deleteBook);
 
 router.post(

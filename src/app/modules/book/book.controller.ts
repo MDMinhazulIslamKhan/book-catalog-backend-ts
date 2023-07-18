@@ -63,6 +63,24 @@ const getAllBooks = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getOwnBooks = catchAsync(async (req: Request, res: Response) => {
+  const filters = pick(req.query, bookFilterableField);
+  const paginationOptions = pick(req.query, paginationFields);
+  const user = req.user;
+  const result = await BookService.getOwnBooks(
+    filters,
+    paginationOptions,
+    user
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Books retrieve successfully!",
+    data: result,
+  });
+});
+
 const deleteBook = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
   const user = req.user;
@@ -96,6 +114,7 @@ export const BookController = {
   createBook,
   getSingleBook,
   getAllBooks,
+  getOwnBooks,
   deleteBook,
   reviewBook,
 };
