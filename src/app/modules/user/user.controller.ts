@@ -48,8 +48,22 @@ const updateBooklist = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const ownProfile = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+
+  const result = await UserService.ownProfile(user);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Your profile retrieve successfully!",
+    data: result,
+  });
+});
+
 export const UserController = {
   addBookIntoWishlist,
   addBookIntoBooklist,
   updateBooklist,
+  ownProfile,
 };

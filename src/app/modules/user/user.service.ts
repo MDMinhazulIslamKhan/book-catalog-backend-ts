@@ -118,8 +118,20 @@ const updateBooklist = async (
   return result;
 };
 
+const ownProfile = async (
+  userInfo: JwtPayload | null
+): Promise<IUser | null> => {
+  const user = await User.findOne({ email: userInfo?.email });
+
+  if (!user) {
+    throw new ApiError(httpStatus.NOT_FOUND, "User not found !");
+  }
+  return user;
+};
+
 export const UserService = {
   addBookIntoWishlist,
   addBookIntoBooklist,
   updateBooklist,
+  ownProfile,
 };

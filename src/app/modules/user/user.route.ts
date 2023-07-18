@@ -6,6 +6,8 @@ import { UserValidation } from "./userValidation";
 
 const router = express.Router();
 
+router.get("/", auth(), UserController.ownProfile);
+
 router.post(
   "/add-book-into-wishlist/:id",
   auth(),
