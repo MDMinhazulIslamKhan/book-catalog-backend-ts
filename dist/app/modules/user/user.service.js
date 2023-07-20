@@ -86,7 +86,10 @@ const updateBooklist = (bookId, userInfo, status) => __awaiter(void 0, void 0, v
     return result;
 });
 const ownProfile = (userInfo) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield user_model_1.default.findOne({ email: userInfo === null || userInfo === void 0 ? void 0 : userInfo.email });
+    const user = yield user_model_1.default.findOne({ email: userInfo === null || userInfo === void 0 ? void 0 : userInfo.email }).populate([
+        "wishList.book",
+        "bookList.book",
+    ]);
     if (!user) {
         throw new ApiError_1.default(http_status_1.default.NOT_FOUND, "User not found !");
     }

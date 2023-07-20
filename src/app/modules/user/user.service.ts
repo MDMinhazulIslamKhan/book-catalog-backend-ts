@@ -121,7 +121,10 @@ const updateBooklist = async (
 const ownProfile = async (
   userInfo: JwtPayload | null
 ): Promise<IUser | null> => {
-  const user = await User.findOne({ email: userInfo?.email });
+  const user = await User.findOne({ email: userInfo?.email }).populate([
+    "wishList.book",
+    "bookList.book",
+  ]);
 
   if (!user) {
     throw new ApiError(httpStatus.NOT_FOUND, "User not found !");
